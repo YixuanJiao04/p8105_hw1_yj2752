@@ -1,7 +1,57 @@
 ---
 title: "p8105_hw1_yj2752"
+author: Yixuan Jiao
 output: github_document
 date: "2022-09-20"
 ---
 
+## Import Library
+```{r}
+library(tidyverse)
+```
+
+## Problem1
+Load the data first and use `skimr::skim` to see a brief summary
+```{r}
+data("penguins", package = "palmerpenguins")
+skimr::skim(penguins)
+```
+
+The data variables' names are `r names(penguins)`.\
+The size of the dataset is `r nrow(penguins)` by `r ncol(penguins)`.\
+The mean of flipper length is `r pull(penguins,flipper_length_mm) %>% mean(na.rm = TRUE)` mm.\
+\
+Use `ggplot` to make scatter plot and save it as a png file.
+```{r}
+penguins_plot = ggplot(penguins, aes(x= bill_length_mm, y= flipper_length_mm, color = species)) + geom_point()
+ggsave('penguins_plot.png',penguins_plot)
+```
+
+## Problem2
+Creating data frame consisting 4 columns with 4 distinct data types.
+```{r}
+set.seed(42)
+df = tibble(
+  num = rnorm(10),
+  logi = num > 0,
+  char = letters[1:10],
+  fac = factor(
+    c("low","high","medium","low","medium","low","high","high","low","low"),
+    levels = c("low","medium","high"))
+  )
+df
+```
+When I tried to get the mean of each columns, the numeric and logical columns work while character and factor column doesn't and their mean was output as NA. The `mean()` function requires a numeric or logical input instead of other types.
+```{r}
+pull(df,num) %>% mean()
+pull(df,logi) %>% mean()
+pull(df,char) %>% mean()
+pull(df,fac) %>% mean()
+```
+Logicals can be transfered to numeric(1 or 0) and factors can be transfered to numeric according to its assigned level. Charaters are not able to be transfered to numeric value and that's why we cannot find a mean of characters.
+```{r results='hide'}
+pull(df,logi) %>% as.numeric()
+pull(df,char) %>% as.numeric()
+pull(df,fac) %>% as.numeric()
+```
 
